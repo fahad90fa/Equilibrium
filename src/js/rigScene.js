@@ -1,173 +1,239 @@
-// Hardware section scene — a procedural gaming battlestation:
-// monitor playing a live-drawn "gameplay HUD", RGB mechanical keyboard,
-// tower with spinning glow fans. All generated in code, zero assets.
+// Hardware section scene — a realistic gaming battlestation render:
+// PBR materials with IBL reflections, soft shadows, a monitor playing a
+// live-drawn tactical-FPS feed, red-LED keyboard and case fans.
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { COLORS } from './config.js'
 
-// ── The "gameplay" that plays on the 3D monitor ───────────────────
+// ── The tactical "gameplay" that plays on the 3D monitor ──────────
 function createScreenFeed() {
   const c = document.createElement('canvas')
   c.width = 512; c.height = 288
   const ctx = c.getContext('2d')
   const tex = new THREE.CanvasTexture(c)
   tex.colorSpace = THREE.SRGBColorSpace
+  tex.anisotropy = 4
 
-  const kills = ['EQ_Sniper ⟶ headshot ⟶ Rush_B', 'FahadOP ⟶ ace ⟶ enemy squad',
-    'N00bSlayer ⟶ clutched ⟶ 1v3', 'LHR_Ghost ⟶ knifed ⟶ CamperKing',
-    'ProBhai ⟶ wallbang ⟶ PeekLord']
-  let killIdx = 0, killTimer = 0
+  const kills = ['EQ_Sniper       headshot       Rush_B', 'FahadOP       ace       enemy squad',
+    'LHR_Ghost       clutch       1v3', 'ProBhai       wallbang       PeekLord']
+  let killIdx = 0, killTimer = 0, hitFlash = 0
 
   function draw(t) {
-    // backdrop — moving perspective floor
-    ctx.fillStyle = '#0b1220'
-    ctx.fillRect(0, 0, 512, 288)
-    ctx.strokeStyle = 'rgba(0,229,255,0.25)'
-    ctx.lineWidth = 1
-    const horizon = 120
-    for (let i = 0; i < 12; i++) {
-      const z = ((t * 60 + i * 40) % 480)
-      const y = horizon + (z / 480) * 168
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke()
+    // muted night-ops backdrop with an ember glow at the horizon
+    const sky = ctx.createLinearGradient(0, 0, 0, 132)
+    sky.addColorStop(0, '#0c1119')
+    sky.addColorStop(1, '#22303f')
+    ctx.fillStyle = sky
+    ctx.fillRect(0, 0, 512, 132)
+    const ember = ctx.createRadialGradient(340, 130, 4, 340, 130, 120)
+    ember.addColorStop(0, 'rgba(255,120,70,0.34)')
+    ember.addColorStop(1, 'rgba(255,120,70,0)')
+    ctx.fillStyle = ember
+    ctx.fillRect(200, 40, 300, 96)
+    const gnd = ctx.createLinearGradient(0, 132, 0, 288)
+    gnd.addColorStop(0, '#141a21')
+    gnd.addColorStop(1, '#07090c')
+    ctx.fillStyle = gnd
+    ctx.fillRect(0, 132, 512, 156)
+
+    // distant structures (parallax silhouettes)
+    ctx.fillStyle = '#0d1219'
+    for (let i = 0; i < 7; i++) {
+      const bx = ((i * 97 - t * 14) % 620) - 60
+      const bh = 26 + ((i * 37) % 40)
+      ctx.fillRect(bx, 132 - bh, 44, bh)
     }
-    for (let i = -6; i <= 6; i++) {
+    // ground perspective streaks
+    ctx.strokeStyle = 'rgba(120,140,160,0.08)'
+    ctx.lineWidth = 1
+    for (let i = -5; i <= 5; i++) {
       ctx.beginPath()
-      ctx.moveTo(256 + i * 26, horizon)
-      ctx.lineTo(256 + i * 130, 288)
+      ctx.moveTo(256 + i * 22, 132)
+      ctx.lineTo(256 + i * 120, 288)
       ctx.stroke()
     }
-    // sky glow
-    const g = ctx.createLinearGradient(0, 0, 0, horizon)
-    g.addColorStop(0, '#111a2c'); g.addColorStop(1, '#1c2f45')
-    ctx.fillStyle = g
-    ctx.fillRect(0, 0, 512, horizon)
-    // sun
-    ctx.fillStyle = 'rgba(255,70,85,0.85)'
-    ctx.beginPath(); ctx.arc(256, horizon - 18, 26, 0, Math.PI * 2); ctx.fill()
 
-    // wandering "enemy" blips
+    // hostiles — dark silhouettes with red outline boxes
     for (let i = 0; i < 3; i++) {
-      const ex = 256 + Math.sin(t * (0.7 + i * 0.35) + i * 2.1) * (90 + i * 50)
-      const ey = 150 + Math.cos(t * (0.5 + i * 0.3) + i) * 34
-      ctx.fillStyle = i === 0 ? '#ff4655' : 'rgba(255,70,85,0.55)'
-      ctx.fillRect(ex - 5, ey - 12, 10, 24)
+      const ex = 256 + Math.sin(t * (0.6 + i * 0.3) + i * 2.1) * (100 + i * 45)
+      const ey = 158 + Math.cos(t * (0.45 + i * 0.3) + i) * 26
+      ctx.fillStyle = '#10151c'
+      ctx.fillRect(ex - 5, ey - 14, 10, 26)
+      ctx.fillStyle = '#1b232d'
+      ctx.beginPath(); ctx.arc(ex, ey - 18, 4, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = 'rgba(255,70,85,0.85)'
+      ctx.lineWidth = 1
+      ctx.strokeRect(ex - 9, ey - 25, 18, 40)
+      ctx.fillStyle = 'rgba(255,70,85,0.9)'
+      ctx.font = '8px monospace'
+      ctx.fillText(`${(34 + i * 11)}m`, ex - 8, ey - 29)
     }
 
-    // crosshair
-    ctx.strokeStyle = '#00e5ff'
-    ctx.lineWidth = 2
-    const cx = 256 + Math.sin(t * 1.7) * 14, cy = 152 + Math.cos(t * 2.3) * 8
+    // crosshair — clean white, hitmarker flash on "shots"
+    const cx = 256 + Math.sin(t * 1.6) * 12, cy = 160 + Math.cos(t * 2.1) * 7
+    ctx.strokeStyle = 'rgba(235,240,245,0.95)'
+    ctx.lineWidth = 1.6
     ctx.beginPath()
-    ctx.moveTo(cx - 14, cy); ctx.lineTo(cx - 5, cy)
-    ctx.moveTo(cx + 5, cy); ctx.lineTo(cx + 14, cy)
-    ctx.moveTo(cx, cy - 14); ctx.lineTo(cx, cy - 5)
-    ctx.moveTo(cx, cy + 5); ctx.lineTo(cx, cy + 14)
+    ctx.moveTo(cx - 12, cy); ctx.lineTo(cx - 4, cy)
+    ctx.moveTo(cx + 4, cy); ctx.lineTo(cx + 12, cy)
+    ctx.moveTo(cx, cy - 12); ctx.lineTo(cx, cy - 4)
+    ctx.moveTo(cx, cy + 4); ctx.lineTo(cx, cy + 12)
     ctx.stroke()
+    if (Math.sin(t * 0.9) > 0.93) hitFlash = 1
+    if (hitFlash > 0.02) {
+      ctx.strokeStyle = `rgba(255,70,85,${hitFlash})`
+      ctx.beginPath()
+      ;[[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => {
+        ctx.moveTo(cx + sx * 6, cy + sy * 6); ctx.lineTo(cx + sx * 11, cy + sy * 11)
+      })
+      ctx.stroke()
+      hitFlash *= 0.86
+    }
 
-    // HUD: healthbar
-    ctx.fillStyle = 'rgba(10,14,23,0.75)'
-    ctx.fillRect(14, 250, 150, 24)
-    ctx.fillStyle = '#35d07f'
-    ctx.fillRect(18, 254, 142 * (0.6 + 0.4 * Math.abs(Math.sin(t * 0.4))), 16)
-    // HUD: ammo
-    ctx.fillStyle = 'rgba(10,14,23,0.75)'
-    ctx.fillRect(400, 250, 98, 24)
-    ctx.fillStyle = '#ece8e1'
-    ctx.font = 'bold 16px monospace'
-    ctx.fillText(`${24 - (Math.floor(t * 4) % 25)} / 90`, 412, 267)
-    // HUD: minimap
-    ctx.strokeStyle = 'rgba(0,229,255,0.7)'
-    ctx.lineWidth = 1.5
-    ctx.strokeRect(430, 14, 68, 68)
-    ctx.fillStyle = 'rgba(0,229,255,0.15)'
-    ctx.fillRect(430, 14, 68, 68)
-    ctx.fillStyle = '#00e5ff'
-    ctx.beginPath(); ctx.arc(464, 48, 3, 0, Math.PI * 2); ctx.fill()
+    // HUD — minimal white/red
+    ctx.fillStyle = 'rgba(6,8,11,0.72)'
+    ctx.fillRect(14, 252, 132, 22)
+    ctx.fillStyle = '#2e3a46'
+    ctx.fillRect(18, 262, 124, 6)
+    ctx.fillStyle = '#e8edf2'
+    ctx.fillRect(18, 262, 124 * (0.55 + 0.45 * Math.abs(Math.sin(t * 0.35))), 6)
+    ctx.font = 'bold 9px monospace'
+    ctx.fillStyle = '#aab6c2'
+    ctx.fillText('HP', 18, 259)
+
+    ctx.fillStyle = 'rgba(6,8,11,0.72)'
+    ctx.fillRect(408, 252, 90, 22)
+    ctx.fillStyle = '#e8edf2'
+    ctx.font = 'bold 14px monospace'
+    ctx.fillText(`${24 - (Math.floor(t * 3) % 25)}`, 418, 268)
+    ctx.fillStyle = '#66727e'
+    ctx.font = '10px monospace'
+    ctx.fillText('/ 90', 448, 268)
+
+    // minimap — grayscale, red pings
+    ctx.fillStyle = 'rgba(6,8,11,0.72)'
+    ctx.fillRect(428, 14, 70, 70)
+    ctx.strokeStyle = 'rgba(160,175,190,0.5)'
+    ctx.lineWidth = 1
+    ctx.strokeRect(428, 14, 70, 70)
+    ctx.strokeStyle = 'rgba(160,175,190,0.16)'
+    ctx.beginPath()
+    ctx.moveTo(428, 49); ctx.lineTo(498, 49)
+    ctx.moveTo(463, 14); ctx.lineTo(463, 84)
+    ctx.stroke()
+    ctx.fillStyle = '#e8edf2'
+    ctx.beginPath(); ctx.arc(463, 49, 2.5, 0, Math.PI * 2); ctx.fill()
     ctx.fillStyle = '#ff4655'
     for (let i = 0; i < 3; i++) {
-      ctx.fillRect(438 + ((Math.sin(t * 0.8 + i * 2) * 0.5 + 0.5) * 52), 20 + ((Math.cos(t * 0.6 + i) * 0.5 + 0.5) * 52), 4, 4)
+      ctx.fillRect(436 + ((Math.sin(t * 0.7 + i * 2) * 0.5 + 0.5) * 54), 20 + ((Math.cos(t * 0.5 + i) * 0.5 + 0.5) * 56), 3, 3)
     }
-    // HUD: killfeed
+
+    // killfeed
     killTimer += 1
-    if (killTimer > 140) { killTimer = 0; killIdx = (killIdx + 1) % kills.length }
-    ctx.fillStyle = 'rgba(10,14,23,0.7)'
-    ctx.fillRect(14, 14, 250, 22)
+    if (killTimer > 150) { killTimer = 0; killIdx = (killIdx + 1) % kills.length }
+    ctx.fillStyle = 'rgba(6,8,11,0.66)'
+    ctx.fillRect(14, 14, 236, 20)
+    ctx.font = '10px monospace'
+    ctx.fillStyle = '#c9d2db'
+    ctx.fillText(kills[killIdx].split('       ')[0], 20, 27)
     ctx.fillStyle = '#ff4655'
-    ctx.font = '12px monospace'
-    ctx.fillText(kills[killIdx], 22, 29)
-    // scanline flicker
-    ctx.fillStyle = 'rgba(255,255,255,0.03)'
-    for (let y = (t * 120) % 6; y < 288; y += 6) ctx.fillRect(0, y, 512, 1)
+    ctx.fillText('⌖ ' + kills[killIdx].split('       ')[1], 100, 27)
+    ctx.fillStyle = '#c9d2db'
+    ctx.fillText(kills[killIdx].split('       ')[2], 168, 27)
+
+    // subtle scan flicker
+    ctx.fillStyle = 'rgba(255,255,255,0.018)'
+    for (let y = (t * 90) % 5; y < 288; y += 5) ctx.fillRect(0, y, 512, 1)
 
     tex.needsUpdate = true
   }
   return { tex, draw }
 }
 
-function glowMat(color, intensity = 2) {
+function ledMat(color, intensity = 1.4) {
   return new THREE.MeshStandardMaterial({
-    color, emissive: color, emissiveIntensity: intensity, metalness: 0.1, roughness: 0.5,
+    color: 0x0a0c10, emissive: color, emissiveIntensity: intensity,
+    metalness: 0.2, roughness: 0.5,
   })
 }
 
 export function initRigScene(canvas, { reducedMotion = false } = {}) {
+  const isMobile = window.innerWidth < 820
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.18
+  if (!isMobile) {
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  }
 
   const scene = new THREE.Scene()
-  scene.fog = new THREE.Fog(COLORS.navy, 8, 22)
+  scene.fog = new THREE.FogExp2(0x05070b, 0.03)
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 60)
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture
+  scene.environmentIntensity = 0.4
+
+  const camera = new THREE.PerspectiveCamera(44, 1, 0.1, 60)
   camera.position.set(0, 1.9, 6.6)
   camera.lookAt(0, 0.85, 0)
 
-  const dark = new THREE.MeshStandardMaterial({ color: 0x111a26, metalness: 0.6, roughness: 0.4 })
-  const darker = new THREE.MeshStandardMaterial({ color: 0x0c1420, metalness: 0.5, roughness: 0.55 })
+  // materials
+  const plastic = new THREE.MeshPhysicalMaterial({
+    color: 0x11151b, metalness: 0.3, roughness: 0.5, clearcoat: 0.35, clearcoatRoughness: 0.4,
+  })
+  const metal = new THREE.MeshStandardMaterial({ color: 0x161b22, metalness: 0.75, roughness: 0.35 })
+  const matte = new THREE.MeshStandardMaterial({ color: 0x0c0f14, metalness: 0.25, roughness: 0.7 })
 
   const station = new THREE.Group()
   scene.add(station)
 
-  // ── Desk ──
-  const desk = new THREE.Mesh(new RoundedBoxGeometry(7, 0.18, 3.1, 2, 0.05), darker)
+  // ── Desk — dark laminate with a soft sheen ──
+  const desk = new THREE.Mesh(new RoundedBoxGeometry(7, 0.16, 3.1, 2, 0.04),
+    new THREE.MeshStandardMaterial({ color: 0x0d1015, metalness: 0.45, roughness: 0.4, envMapIntensity: 0.8 }))
   desk.position.y = -0.1
+  desk.receiveShadow = true
   station.add(desk)
-  const deskEdge = new THREE.Mesh(new THREE.BoxGeometry(7, 0.03, 0.05), glowMat(COLORS.red, 2.4))
-  deskEdge.position.set(0, 0, 1.53)
+  const deskEdge = new THREE.Mesh(new THREE.BoxGeometry(7, 0.025, 0.04), ledMat(COLORS.red, 1.6))
+  deskEdge.position.set(0, -0.02, 1.53)
   station.add(deskEdge)
 
   // ── Monitor (plays the live feed) ──
   const feed = createScreenFeed()
   const monitor = new THREE.Group()
-  const frame = new THREE.Mesh(new RoundedBoxGeometry(3.5, 2.05, 0.12, 2, 0.04), dark)
+  const frame = new THREE.Mesh(new RoundedBoxGeometry(3.5, 2.05, 0.1, 2, 0.03), plastic)
+  frame.castShadow = true
   const screen = new THREE.Mesh(
-    new THREE.PlaneGeometry(3.3, 1.85),
+    new THREE.PlaneGeometry(3.36, 1.9),
     new THREE.MeshBasicMaterial({ map: feed.tex, toneMapped: false })
   )
-  screen.position.z = 0.07
-  const standNeck = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.7, 0.1), dark)
+  screen.position.z = 0.06
+  const standNeck = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.7, 0.09), metal)
   standNeck.position.set(0, -1.3, -0.05)
-  const standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.6, 0.06, 24), dark)
+  const standBase = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.58, 0.05, 28), metal)
   standBase.position.set(0, -1.62, 0)
   monitor.add(frame, screen, standNeck, standBase)
   monitor.position.set(-0.4, 1.72, -0.6)
   monitor.rotation.y = 0.06
   station.add(monitor)
 
-  // ── RGB mechanical keyboard ──
+  // ── Keyboard — black caps over a red LED underglow wave ──
   const keyboard = new THREE.Group()
-  const kbBase = new THREE.Mesh(new RoundedBoxGeometry(2.3, 0.12, 0.85, 2, 0.03), dark)
+  const kbBase = new THREE.Mesh(new RoundedBoxGeometry(2.3, 0.11, 0.85, 2, 0.03), plastic)
+  kbBase.castShadow = true
   keyboard.add(kbBase)
-  const keyGeo = new RoundedBoxGeometry(0.135, 0.06, 0.135, 1, 0.015)
+  const keyGeo = new RoundedBoxGeometry(0.135, 0.055, 0.135, 1, 0.014)
   const keys = []
   for (let r = 0; r < 4; r++) {
     for (let col = 0; col < 13; col++) {
       const m = new THREE.MeshStandardMaterial({
-        color: 0x1a2635, metalness: 0.3, roughness: 0.6,
-        emissive: new THREE.Color().setHSL((r * 13 + col) / 52, 0.9, 0.5),
-        emissiveIntensity: 0.55,
+        color: 0x14181e, metalness: 0.25, roughness: 0.6,
+        emissive: COLORS.red, emissiveIntensity: 0.12,
       })
       const k = new THREE.Mesh(keyGeo, m)
-      k.position.set(-0.96 + col * 0.16, 0.09, -0.24 + r * 0.16)
+      k.position.set(-0.96 + col * 0.16, 0.085, -0.24 + r * 0.16)
       keyboard.add(k)
       keys.push(k)
     }
@@ -176,100 +242,102 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
   keyboard.rotation.y = -0.04
   station.add(keyboard)
 
-  // ── Mouse + glowing pad ──
-  const mousePad = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.75), new THREE.MeshStandardMaterial({
-    color: 0x0d1520, emissive: COLORS.cyan, emissiveIntensity: 0.08, roughness: 0.9,
-  }))
+  // ── Mouse + pad ──
+  const mousePad = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.75), matte)
   mousePad.rotation.x = -Math.PI / 2
-  mousePad.position.set(1.25, 0.005, 0.62)
-  const mouseBody = new THREE.Mesh(new THREE.SphereGeometry(0.16, 18, 14), dark)
-  mouseBody.scale.set(0.85, 0.5, 1.3)
-  mouseBody.position.set(1.25, 0.07, 0.62)
-  const mouseStrip = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.02, 0.32), glowMat(COLORS.cyan, 2.2))
-  mouseStrip.position.set(1.25, 0.14, 0.6)
+  mousePad.position.set(1.25, 0.002, 0.62)
+  const mouseBody = new THREE.Mesh(new THREE.SphereGeometry(0.16, 22, 16), plastic)
+  mouseBody.scale.set(0.82, 0.48, 1.28)
+  mouseBody.position.set(1.25, 0.065, 0.62)
+  mouseBody.castShadow = true
+  const mouseStrip = new THREE.Mesh(new THREE.BoxGeometry(0.024, 0.016, 0.3), ledMat(COLORS.red, 1.5))
+  mouseStrip.position.set(1.25, 0.135, 0.6)
   station.add(mousePad, mouseBody, mouseStrip)
 
-  // ── Tower with spinning glow-fans ──
+  // ── Tower — brushed metal case, tempered-glass front, red LED fans ──
   const tower = new THREE.Group()
-  const towerMat = new THREE.MeshStandardMaterial({
-    color: 0x1b2939, metalness: 0.55, roughness: 0.42,
-    emissive: 0x0c1522, emissiveIntensity: 0.6,
-  })
-  const towerBody = new THREE.Mesh(new RoundedBoxGeometry(0.95, 2.2, 2.0, 2, 0.04), towerMat)
+  const towerBody = new THREE.Mesh(new RoundedBoxGeometry(0.95, 2.2, 2.0, 2, 0.03), metal)
+  towerBody.castShadow = true
   tower.add(towerBody)
-  const glass = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.9, 2.05),
-    new THREE.MeshStandardMaterial({ color: 0x0a1018, metalness: 0.9, roughness: 0.15, transparent: true, opacity: 0.55 })
+  const glassFront = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.86, 2.1),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x05070b, metalness: 0, roughness: 0.05, transparent: true, opacity: 0.42,
+      clearcoat: 1, clearcoatRoughness: 0.05,
+    })
   )
-  glass.position.set(0.49, 0, 0)
-  glass.rotation.y = Math.PI / 2
-  tower.add(glass)
+  glassFront.position.set(0, 0, 1.06)
+  tower.add(glassFront)
   const fans = []
-  const fanColors = [COLORS.red, COLORS.cyan, 0xff2bd6] // brand palette, no rainbow drift
   for (let i = 0; i < 3; i++) {
     const fan = new THREE.Group()
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.035, 10, 28), glowMat(fanColors[i], 2.2))
-    fan.add(ring)
-    for (let b = 0; b < 3; b++) {
-      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.07, 0.02), dark)
-      blade.rotation.z = (b / 3) * Math.PI * 2
-      fan.add(blade)
+    const housing = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.05, 28), matte)
+    housing.rotation.x = Math.PI / 2
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.026, 12, 32), ledMat(COLORS.red, 1.6))
+    fan.add(housing, ring)
+    const blades = new THREE.Group()
+    for (let b = 0; b < 7; b++) {
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.016), metal)
+      blade.position.x = 0.12
+      const holder = new THREE.Group()
+      holder.rotation.z = (b / 7) * Math.PI * 2
+      holder.add(blade)
+      blades.add(holder)
     }
-    // fans live on the front face, angled toward the camera
+    fan.add(blades)
     fan.position.set(0, 0.66 - i * 0.66, 1.02)
     tower.add(fan)
-    fans.push({ fan, ring })
+    fans.push({ blades, ring })
   }
-  const gpuStrip = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.05, 0.02), glowMat(COLORS.cyan, 2.4))
-  gpuStrip.position.set(0, -0.95, 1.02)
-  tower.add(gpuStrip)
   tower.position.set(2.25, 1.0, -0.45)
   tower.rotation.y = -0.5
   station.add(tower)
 
   // ── Headset on a stand ──
-  const hsStand = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.9, 10), dark)
+  const hsStand = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.9, 12), metal)
   hsStand.position.set(-2.6, 0.45, 0.3)
-  const hsBand = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.05, 10, 24, Math.PI), dark)
+  const hsBand = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.05, 12, 28, Math.PI), plastic)
   hsBand.position.set(-2.6, 0.85, 0.3)
-  const earL = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 12), dark)
+  const earL = new THREE.Mesh(new THREE.SphereGeometry(0.13, 18, 14), plastic)
   earL.scale.set(1, 1.25, 0.7); earL.position.set(-2.9, 0.72, 0.3)
   const earR = earL.clone(); earR.position.x = -2.3
-  const hsGlowL = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.018, 8, 20), glowMat(COLORS.red, 2))
+  const hsGlowL = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.014, 10, 22), ledMat(COLORS.red, 1.2))
   hsGlowL.position.copy(earL.position); hsGlowL.position.x -= 0.09; hsGlowL.rotation.y = Math.PI / 2
   const hsGlowR = hsGlowL.clone(); hsGlowR.position.x = earR.position.x + 0.09
   station.add(hsStand, hsBand, earL, earR, hsGlowL, hsGlowR)
 
-  // ── Floor glow ──
+  // ── Floor — same glossy studio floor as the hero ──
   const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(30, 30),
-    new THREE.MeshStandardMaterial({ color: 0x0a0e17, metalness: 0.4, roughness: 0.7 })
+    new THREE.PlaneGeometry(34, 34),
+    new THREE.MeshStandardMaterial({ color: 0x090c12, metalness: 0.8, roughness: 0.28, envMapIntensity: 0.9 })
   )
   floor.rotation.x = -Math.PI / 2
   floor.position.y = -1.55
+  floor.receiveShadow = true
   scene.add(floor)
 
   station.position.y = -0.45
 
   // ── Lights ──
-  scene.add(new THREE.AmbientLight(0x3c5070, 1.7))
-  const key = new THREE.DirectionalLight(0xcfe0ff, 2.3)
-  key.position.set(-3, 6, 5)
+  scene.add(new THREE.AmbientLight(0x1e2836, 1.5))
+  const key = new THREE.SpotLight(0xe6eeff, 110, 30, 0.6, 0.5, 1.7)
+  key.position.set(-2.5, 7, 5)
+  key.target = station
+  if (!isMobile) {
+    key.castShadow = true
+    key.shadow.mapSize.set(1024, 1024)
+    key.shadow.bias = -0.0005
+  }
   scene.add(key)
-  const redFill = new THREE.PointLight(COLORS.red, 24, 15)
+  const redFill = new THREE.PointLight(COLORS.red, 18, 14, 1.9)
   redFill.position.set(3.4, 2.4, 1.6)
   scene.add(redFill)
-  const cyanFill = new THREE.PointLight(COLORS.cyan, 16, 13)
-  cyanFill.position.set(-3.4, 1.8, 2.2)
-  scene.add(cyanFill)
-  // screen light spills onto the desk
-  const screenLight = new THREE.PointLight(0x8ab6ff, 10, 7)
-  screenLight.position.set(-0.4, 1.6, 0.4)
+  const coolFill = new THREE.PointLight(0xaec6e8, 10, 13, 1.9)
+  coolFill.position.set(-3.4, 1.8, 2.4)
+  scene.add(coolFill)
+  const screenLight = new THREE.PointLight(0x9db8dd, 9, 7, 1.9)
+  screenLight.position.set(-0.4, 1.6, 0.5)
   scene.add(screenLight)
-  // frontal fill so the station reads clearly
-  const front = new THREE.PointLight(0xd8e6ff, 14, 16)
-  front.position.set(0.6, 2.4, 5.6)
-  scene.add(front)
 
   function resize() {
     const w = canvas.clientWidth || 600
@@ -290,10 +358,7 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
   let running = false
   let visible = true
   document.addEventListener('visibilitychange', () => { visible = !document.hidden })
-
-  const io = new IntersectionObserver(([entry]) => {
-    running = entry.isIntersecting
-  }, { threshold: 0.05 })
+  const io = new IntersectionObserver(([entry]) => { running = entry.isIntersecting }, { threshold: 0.05 })
   io.observe(canvas)
 
   let frameCount = 0
@@ -303,27 +368,22 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
     const t = clock.getElapsedTime()
     frameCount++
 
-    // live gameplay feed — redraw every other frame (canvas 2D is cheap but why waste it)
     if (frameCount % 2 === 0) feed.draw(t)
 
     if (!reducedMotion) {
-      // slow showcase sway
-      station.rotation.y = Math.sin(t * 0.22) * 0.16 + mouse.x * 0.12
-      // fans spin, glow pulses in brand colors
-      fans.forEach(({ fan, ring }, i) => {
-        fan.children.forEach((child, ci) => { if (ci > 0) child.rotation.z += 0.3 })
-        ring.material.emissiveIntensity = 1.7 + Math.sin(t * 2.4 + i * 2.1) * 0.8
+      station.rotation.y = Math.sin(t * 0.2) * 0.14 + mouse.x * 0.1
+
+      fans.forEach(({ blades, ring }, i) => {
+        blades.rotation.z += 0.32
+        ring.material.emissiveIntensity = 1.35 + Math.sin(t * 2.2 + i * 2.1) * 0.45
       })
-      // rgb keyboard wave
+      // red LED wave sweeping across the keys
       keys.forEach((k, i) => {
         const col = i % 13
-        k.material.emissiveIntensity = 0.35 + Math.max(0, Math.sin(t * 3 - col * 0.45)) * 0.85
+        k.material.emissiveIntensity = 0.1 + Math.max(0, Math.sin(t * 2.2 - col * 0.4)) * 0.5
+        k.position.y = 0.085 - (Math.sin(t * 9 + i * 37.7) > 0.988 ? 0.025 : 0)
       })
-      // occasional key "press"
-      keys.forEach((k, i) => {
-        k.position.y = 0.09 - (Math.sin(t * 9 + i * 37.7) > 0.985 ? 0.03 : 0)
-      })
-      redFill.intensity = 17 + Math.sin(t * 1.8) * 6
+      redFill.intensity = 16 + Math.sin(t * 1.6) * 4
     }
 
     mouse.x += (mouse.tx - mouse.x) * 0.04

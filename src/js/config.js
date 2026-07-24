@@ -14,27 +14,27 @@ export const SITE = {
 // ── Games roster shown in section 02 ──────────────────────────────
 // c1: glow tint  |  c2: accent/stroke  |  letter: watermark initial
 export const GAMES = [
-  { title: 'VALORANT',          genre: 'TACTICAL 5v5', tags: ['PC'],         c1: 'rgba(255,70,85,.32)',   c2: '#ff4655', letter: 'V' },
-  { title: 'COUNTER-STRIKE 2',  genre: 'TACTICAL FPS', tags: ['PC'],         c1: 'rgba(255,184,107,.30)', c2: '#ffb86b', letter: 'CS' },
-  { title: 'DOTA 2',            genre: 'MOBA',         tags: ['PC'],         c1: 'rgba(214,40,40,.32)',   c2: '#e63946', letter: 'D' },
-  { title: 'PUBG',              genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(242,177,52,.30)',  c2: '#f2b134', letter: 'P' },
-  { title: 'TEKKEN 8',          genre: 'FIGHTING',     tags: ['PS5'],        c1: 'rgba(155,93,229,.32)',  c2: '#9b5de5', letter: 'T' },
-  { title: 'EA FC 25',          genre: 'FOOTBALL',     tags: ['PC', 'PS5'],  c1: 'rgba(53,208,127,.30)',  c2: '#35d07f', letter: 'FC' },
-  { title: 'CALL OF DUTY',      genre: 'FPS',          tags: ['PC'],         c1: 'rgba(0,229,255,.26)',   c2: '#00e5ff', letter: 'C' },
-  { title: 'GTA V',             genre: 'OPEN WORLD',   tags: ['PC', 'PS5'],  c1: 'rgba(108,197,81,.30)',  c2: '#6cc551', letter: 'G' },
-  { title: 'APEX LEGENDS',      genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(218,54,42,.32)',   c2: '#da362a', letter: 'A' },
-  { title: 'LEAGUE OF LEGENDS', genre: 'MOBA',         tags: ['PC'],         c1: 'rgba(200,170,110,.30)', c2: '#c8aa6e', letter: 'L' },
-  { title: 'FORTNITE',          genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(155,93,229,.30)',  c2: '#b388ff', letter: 'F' },
-  { title: 'ROCKET LEAGUE',     genre: 'CAR FOOTBALL', tags: ['PC', 'PS5'],  c1: 'rgba(0,229,255,.28)',   c2: '#4dd8ff', letter: 'R' },
+  { title: 'VALORANT',          genre: 'TACTICAL 5v5', tags: ['PC'],         c1: 'rgba(255,70,85,.14)',   c2: '#ff4655', letter: 'V' },
+  { title: 'COUNTER-STRIKE 2',  genre: 'TACTICAL FPS', tags: ['PC'],         c1: 'rgba(224,164,96,.13)',  c2: '#e0a460', letter: 'CS' },
+  { title: 'DOTA 2',            genre: 'MOBA',         tags: ['PC'],         c1: 'rgba(199,62,74,.14)',   c2: '#c73e4a', letter: 'D' },
+  { title: 'PUBG',              genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(214,164,60,.13)',  c2: '#d6a43c', letter: 'P' },
+  { title: 'TEKKEN 8',          genre: 'FIGHTING',     tags: ['PS5'],        c1: 'rgba(146,102,204,.14)', c2: '#9266cc', letter: 'T' },
+  { title: 'EA FC 25',          genre: 'FOOTBALL',     tags: ['PC', 'PS5'],  c1: 'rgba(74,186,126,.13)',  c2: '#4aba7e', letter: 'FC' },
+  { title: 'CALL OF DUTY',      genre: 'FPS',          tags: ['PC'],         c1: 'rgba(120,164,190,.13)', c2: '#78a4be', letter: 'C' },
+  { title: 'GTA V',             genre: 'OPEN WORLD',   tags: ['PC', 'PS5'],  c1: 'rgba(120,178,100,.13)', c2: '#78b264', letter: 'G' },
+  { title: 'APEX LEGENDS',      genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(205,74,58,.14)',   c2: '#cd4a3a', letter: 'A' },
+  { title: 'LEAGUE OF LEGENDS', genre: 'MOBA',         tags: ['PC'],         c1: 'rgba(190,164,112,.13)', c2: '#bea470', letter: 'L' },
+  { title: 'FORTNITE',          genre: 'BATTLE ROYALE',tags: ['PC'],         c1: 'rgba(148,116,220,.13)', c2: '#9474dc', letter: 'F' },
+  { title: 'ROCKET LEAGUE',     genre: 'CAR FOOTBALL', tags: ['PC', 'PS5'],  c1: 'rgba(96,168,206,.13)',  c2: '#60a8ce', letter: 'R' },
 ]
 
 // Brand palette shared with the WebGL scenes
 export const COLORS = {
-  bg: 0x0a0e17,
-  navy: 0x0f1923,
-  body: 0x16202e,
+  bg: 0x05070b,
+  navy: 0x090d14,
+  body: 0x14181e,
   red: 0xff4655,
-  cyan: 0x00e5ff,
+  cyan: 0x7fd4e4,
   amber: 0xffb86b,
-  white: 0xece8e1,
+  white: 0xe9e5de,
 }

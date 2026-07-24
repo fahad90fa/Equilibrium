@@ -3,18 +3,19 @@
 A fully animated, 3D, gaming-vibe website for **Equilibrium Gaming Zone** — Lahore's 24/7
 esports arena (Commercial Area 184, Airline Society, Johar Town).
 
-Dark tactical theme inspired by Valorant / CS2 / Dota 2: neon-red + cyan on deep navy,
-angular HUD-style UI, glitch effects, and two real-time WebGL 3D scenes — all procedural,
-zero image/model assets.
+Cinematic tactical theme inspired by Valorant / CS2: Valorant-red on near-black gunmetal,
+angular HUD-style UI, glitch effects, and two real-time photoreal-leaning WebGL scenes
+(PBR materials, image-based lighting, ACES filmic tone mapping, soft shadows) — all
+procedural, zero image/model assets.
 
 ## ✨ What's inside
 
-- **Animated 3D hero** — synthwave grid rushing under a floating, glowing game controller
-  (built from primitives in Three.js), particle field, wireframe sentinels, neon bloom
-  post-processing, mouse parallax and scroll-linked camera.
+- **Cinematic 3D hero** — studio product-showcase: a matte-black PBR game controller with
+  red LED accents floating over a glossy reflective floor, volumetric light shafts,
+  drifting dust motes, red backlight halo, restrained bloom, slow dolly + mouse parallax.
 - **Live "battlestation" 3D scene** — a monitor that actually *plays* a procedurally-drawn
-  FPS HUD (killfeed, crosshair, minimap, ammo), RGB mechanical keyboard wave, tower with
-  spinning brand-colored glow fans.
+  tactical-FPS feed (killfeed, crosshair with hitmarkers, minimap, ammo), red-LED
+  mechanical keyboard wave, brushed-metal tower with spinning LED fans, soft shadows.
 - **Full gaming-vibe UI** — preloader boot sequence, crosshair custom cursor, glitch title
   bursts, CRT scanlines + noise, angular clip-path buttons, corner-bracket cards, tilting
   3D hover cards, animated stat counters, skewed marquee of game titles.

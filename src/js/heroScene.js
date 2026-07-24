@@ -1,56 +1,43 @@
-// Hero WebGL scene — synthwave grid rushing under a floating controller,
-// drifting particle field, neon bloom. Fully procedural.
+// Hero WebGL scene — cinematic product-showcase style:
+// PBR controller under studio spotlights on a glossy dark floor,
+// volumetric light shafts, drifting dust, ACES filmic grade + bloom.
 import * as THREE from 'three'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { createGamepad } from './gamepad.js'
 import { COLORS } from './config.js'
+import { softSprite, beamGradient, haloSprite, hexPanelTexture } from './textures.js'
 
-const GRID_DEPTH = 60
-
-function makeGrid() {
-  // Custom line grid so we can scroll it toward the camera forever
-  const size = 90
-  const step = 1.5
-  const positions = []
-  for (let x = -size / 2; x <= size / 2; x += step) {
-    positions.push(x, 0, -GRID_DEPTH, x, 0, 0)
-  }
-  for (let z = -GRID_DEPTH; z <= 0; z += step) {
-    positions.push(-size / 2, 0, z, size / 2, 0, z)
-  }
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
-  const mat = new THREE.LineBasicMaterial({
-    color: COLORS.red, transparent: true, opacity: 0.34,
-  })
-  return new THREE.LineSegments(geo, mat)
-}
-
-function makeParticles(count) {
+function makeDust(count) {
   const geo = new THREE.BufferGeometry()
   const pos = new Float32Array(count * 3)
-  const col = new Float32Array(count * 3)
-  const cRed = new THREE.Color(COLORS.red)
-  const cCyan = new THREE.Color(COLORS.cyan)
-  const cWhite = new THREE.Color(0x7a8aa0)
+  const seeds = new Float32Array(count)
   for (let i = 0; i < count; i++) {
-    pos[i * 3] = (Math.random() - 0.5) * 40
-    pos[i * 3 + 1] = Math.random() * 16 - 3
-    pos[i * 3 + 2] = -Math.random() * 40 + 4
-    const r = Math.random()
-    const c = r < 0.25 ? cRed : r < 0.5 ? cCyan : cWhite
-    col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b
+    pos[i * 3] = (Math.random() - 0.5) * 22
+    pos[i * 3 + 1] = Math.random() * 9 - 1.6
+    pos[i * 3 + 2] = -Math.random() * 16 + 5
+    seeds[i] = Math.random() * Math.PI * 2
   }
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3))
   const mat = new THREE.PointsMaterial({
-    size: 0.07, vertexColors: true, transparent: true, opacity: 0.85,
-    blending: THREE.AdditiveBlending, depthWrite: false,
+    size: 0.055, map: softSprite(48), transparent: true, opacity: 0.5,
+    color: 0xcfd8e6, blending: THREE.AdditiveBlending, depthWrite: false,
   })
-  return new THREE.Points(geo, mat)
+  const points = new THREE.Points(geo, mat)
+  points.userData.seeds = seeds
+  return points
+}
+
+function makeBeam(color, opacity) {
+  const geo = new THREE.ConeGeometry(2.5, 11, 40, 1, true)
+  const mat = new THREE.MeshBasicMaterial({
+    map: beamGradient(), color, transparent: true, opacity,
+    blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide,
+  })
+  return new THREE.Mesh(geo, mat)
 }
 
 export function initHeroScene(canvas, { reducedMotion = false } = {}) {
@@ -60,70 +47,125 @@ export function initHeroScene(canvas, { reducedMotion = false } = {}) {
     canvas, antialias: !isMobile, alpha: false, powerPreference: 'high-performance',
   })
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2))
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 1.12
+  if (!isMobile) {
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  }
 
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(COLORS.bg)
-  scene.fog = new THREE.Fog(COLORS.bg, 9, 34)
+  scene.background = new THREE.Color(0x05070b)
+  scene.fog = new THREE.FogExp2(0x05070b, 0.052)
 
-  const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 100)
-  camera.position.set(0, 1.15, 6.6)
+  // image-based lighting for believable reflections on the PBR materials
+  const pmrem = new THREE.PMREMGenerator(renderer)
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture
+  scene.environmentIntensity = 0.35
 
-  // ── Actors ──
-  const grid = makeGrid()
-  grid.position.y = -1.9
-  scene.add(grid)
+  const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 80)
+  camera.position.set(0, 1.35, 7.4)
 
-  const gridFar = makeGrid()
-  gridFar.material = grid.material.clone()
-  gridFar.material.opacity = 0.13
-  gridFar.material.color = new THREE.Color(COLORS.cyan)
-  gridFar.position.y = 5.4
-  gridFar.rotation.x = Math.PI // ceiling grid
-  scene.add(gridFar)
+  // ── Stage ──
+  // glossy dark floor — picks up the environment + spotlight like polished stone
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(70, 40),
+    new THREE.MeshStandardMaterial({
+      color: 0x090c12, metalness: 0.82, roughness: 0.24, envMapIntensity: 1.1,
+    })
+  )
+  floor.rotation.x = -Math.PI / 2
+  floor.position.y = -1.7
+  floor.receiveShadow = true
+  scene.add(floor)
 
-  const particles = makeParticles(isMobile ? 260 : 650)
-  scene.add(particles)
+  // faint red ground-glow ring under the showcase
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(1.35, 2.5, 64),
+    new THREE.MeshBasicMaterial({
+      map: haloSprite(256), color: COLORS.red, transparent: true, opacity: 0.16,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    })
+  )
+  ring.rotation.x = -Math.PI / 2
+  ring.position.set(0, -1.69, 1.4)
+  scene.add(ring)
 
+  // hex-plate backdrop wall, barely visible through the haze
+  const wallTex = hexPanelTexture()
+  wallTex.repeat.set(5, 2.4)
+  const wall = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 26),
+    new THREE.MeshStandardMaterial({
+      map: wallTex, color: 0x2c374a, metalness: 0.6, roughness: 0.6,
+    })
+  )
+  wall.position.set(0, 6, -15)
+  scene.add(wall)
+
+  // cinematic red backlight halo behind the controller
+  const halo = new THREE.Mesh(
+    new THREE.PlaneGeometry(11, 11),
+    new THREE.MeshBasicMaterial({
+      map: haloSprite(256, '255,60,74'), transparent: true, opacity: 0.38,
+      blending: THREE.AdditiveBlending, depthWrite: false,
+    })
+  )
+  halo.position.set(0.4, 0.9, -3.4)
+  scene.add(halo)
+
+  // volumetric-style light shafts
+  const beamL = makeBeam(0xbfd4ee, 0.05)
+  beamL.position.set(-3.6, 3.4, -1.5)
+  beamL.rotation.z = 0.42
+  const beamR = makeBeam(0xffb0b6, 0.045)
+  beamR.position.set(3.8, 3.6, -2.2)
+  beamR.rotation.z = -0.38
+  scene.add(beamL, beamR)
+
+  // drifting dust motes
+  const dust = makeDust(isMobile ? 140 : 320)
+  scene.add(dust)
+
+  // ── The showcase piece ──
   const pad = createGamepad()
-  pad.scale.setScalar(isMobile ? 0.62 : 0.88)
-  pad.position.set(0, 0.42, 2.4)
+  pad.scale.setScalar(isMobile ? 0.58 : 0.78)
+  pad.position.set(0, -0.12, 2.4)
   scene.add(pad)
 
-  // Wireframe sentinels floating at the flanks for depth
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: COLORS.cyan, wireframe: true, transparent: true, opacity: 0.16,
-  })
-  const icoL = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 0), wireMat)
-  icoL.position.set(-7.5, 2.4, -6)
-  const icoR = new THREE.Mesh(new THREE.OctahedronGeometry(1.9, 0), wireMat.clone())
-  icoR.material.color = new THREE.Color(COLORS.red)
-  icoR.position.set(7.8, 3.1, -8)
-  scene.add(icoL, icoR)
-
-  // ── Lights ──
-  scene.add(new THREE.AmbientLight(0x3a4c68, 1.15))
-  const key = new THREE.DirectionalLight(0xbfd9ff, 2.6)
-  key.position.set(4, 6, 6)
+  // ── Lights (studio setup) ──
+  scene.add(new THREE.AmbientLight(0x1c2634, 1.4))
+  // key spot from top-front — casts the contact shadow
+  const key = new THREE.SpotLight(0xe8f0ff, 140, 30, 0.55, 0.45, 1.6)
+  key.position.set(2.5, 7.5, 6)
+  key.target = pad
+  if (!isMobile) {
+    key.castShadow = true
+    key.shadow.mapSize.set(1024, 1024)
+    key.shadow.bias = -0.0005
+  }
   scene.add(key)
-  const under = new THREE.PointLight(COLORS.red, 26, 18)
-  under.position.set(0, -1.2, 3)
-  scene.add(under)
-  const rim = new THREE.PointLight(COLORS.cyan, 18, 20)
-  rim.position.set(-5, 4, 0)
+  // red rim from behind-left — the signature accent
+  const rim = new THREE.PointLight(COLORS.red, 30, 20, 1.8)
+  rim.position.set(-4, 2.6, -1.5)
   scene.add(rim)
-  // soft frontal fill so the controller body reads as a shape, not a silhouette
-  const front = new THREE.PointLight(0xd8e6ff, 10, 14)
-  front.position.set(0, 1.6, 5.4)
+  // cool kicker from the right for edge separation
+  const kick = new THREE.PointLight(0x9fc4ff, 16, 16, 1.8)
+  kick.position.set(5, 1.2, 2.5)
+  scene.add(kick)
+  // soft frontal fill
+  const front = new THREE.PointLight(0xd8e2f2, 7, 14, 1.9)
+  front.position.set(0, 1.4, 6)
   scene.add(front)
 
-  // ── Post-processing (bloom = the neon) ──
+  // ── Post: restrained bloom (LEDs + halo only) + filmic output ──
   const composer = new EffectComposer(renderer)
   composer.addPass(new RenderPass(scene, camera))
-  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.85, 0.75, 0.18)
+  const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.5, 0.85, 0.62)
   composer.addPass(bloom)
   composer.addPass(new OutputPass())
 
-  // ── Interaction state ──
+  // ── Interaction ──
   const mouse = { x: 0, y: 0, tx: 0, ty: 0 }
   function onPointer(e) {
     mouse.tx = (e.clientX / window.innerWidth) * 2 - 1
@@ -142,22 +184,14 @@ export function initHeroScene(canvas, { reducedMotion = false } = {}) {
   resize()
   window.addEventListener('resize', resize)
 
-  // ── Animation loop ──
   const clock = new THREE.Clock()
   let running = true
   let visible = true
-
-  document.addEventListener('visibilitychange', () => {
-    visible = !document.hidden
-  })
-
-  // Pause rendering once the hero is fully scrolled past
-  const io = new IntersectionObserver(([entry]) => {
-    running = entry.isIntersecting
-  }, { threshold: 0.02 })
+  document.addEventListener('visibilitychange', () => { visible = !document.hidden })
+  const io = new IntersectionObserver(([entry]) => { running = entry.isIntersecting }, { threshold: 0.02 })
   io.observe(canvas)
 
-  const gridSpeed = reducedMotion ? 0 : 3.2
+  let scrollProgress = 0
 
   function tick() {
     requestAnimationFrame(tick)
@@ -165,40 +199,44 @@ export function initHeroScene(canvas, { reducedMotion = false } = {}) {
     const t = clock.getElapsedTime()
     const dt = Math.min(clock.getDelta(), 0.05)
 
-    // infinite grid scroll
-    grid.position.z = (t * gridSpeed) % 1.5
-    gridFar.position.z = (t * gridSpeed * 0.55) % 1.5
-
     if (!reducedMotion) {
-      pad.rotation.y = Math.sin(t * 0.45) * 0.55 + t * 0.12
-      pad.position.y = 0.42 + Math.sin(t * 1.2) * 0.14
-      pad.rotation.z = Math.sin(t * 0.6) * 0.06
+      // slow display-stand rotation + gentle float
+      pad.rotation.y = Math.sin(t * 0.4) * 0.5 + t * 0.1
+      pad.position.y = -0.12 + Math.sin(t * 1.1) * 0.1
+      pad.rotation.z = Math.sin(t * 0.55) * 0.05
 
-      particles.rotation.y = t * 0.02
-      icoL.rotation.x = t * 0.24; icoL.rotation.y = t * 0.18
-      icoR.rotation.x = -t * 0.2; icoR.rotation.y = t * 0.26
+      // dust drifts upward, loops
+      const pos = dust.geometry.attributes.position
+      const seeds = dust.userData.seeds
+      for (let i = 0; i < pos.count; i++) {
+        let y = pos.getY(i) + dt * 0.14
+        if (y > 7.5) y = -1.6
+        pos.setY(i, y)
+        pos.setX(i, pos.getX(i) + Math.sin(t * 0.5 + seeds[i]) * dt * 0.05)
+      }
+      pos.needsUpdate = true
 
-      // red underglow pulse
-      under.intensity = 22 + Math.sin(t * 2.2) * 8
+      // light shafts sway almost imperceptibly
+      beamL.rotation.z = 0.42 + Math.sin(t * 0.3) * 0.03
+      beamR.rotation.z = -0.38 + Math.cos(t * 0.26) * 0.03
+      halo.material.opacity = 0.44 + Math.sin(t * 1.3) * 0.08
+      rim.intensity = 27 + Math.sin(t * 1.7) * 6
     }
 
-    // mouse parallax with soft lerp
-    mouse.x += (mouse.tx - mouse.x) * 0.05
-    mouse.y += (mouse.ty - mouse.y) * 0.05
-    camera.position.x = mouse.x * 0.7
-    camera.position.y = 1.15 - mouse.y * 0.35
-    camera.lookAt(0, 0.9, 0)
+    // slow cinematic dolly + mouse parallax
+    mouse.x += (mouse.tx - mouse.x) * 0.045
+    mouse.y += (mouse.ty - mouse.y) * 0.045
+    const dolly = reducedMotion ? 0 : Math.sin(t * 0.16) * 0.25
+    camera.position.x = mouse.x * 0.55
+    camera.position.y = 1.35 - mouse.y * 0.3 + scrollProgress * 1.2
+    camera.position.z = 7.4 + dolly + scrollProgress * 2.6
+    camera.lookAt(0, 0.3, 0.8)
 
     composer.render(dt)
   }
   tick()
 
   return {
-    setScroll(progress) {
-      // hero parallax as user scrolls away
-      camera.fov = 58 + progress * 14
-      camera.updateProjectionMatrix()
-      pad.position.z = 2.2 + progress * 3.4
-    },
+    setScroll(progress) { scrollProgress = progress },
   }
 }
