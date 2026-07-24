@@ -5,6 +5,7 @@ import './styles/base.css'
 import './styles/sections.css'
 import { SITE } from './js/config.js'
 import { initCursor, initGlitchBursts, initTilt, initCounters, renderGames } from './js/fx.js'
+import { initGallery } from './js/gallery.js'
 import { runPreloader, heroEntrance, initScrollAnimations, bindHeroScroll } from './js/animations.js'
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -66,6 +67,7 @@ function initMarquee() {
 // ── Boot sequence ─────────────────────────────────────────────────
 document.getElementById('year').textContent = String(new Date().getFullYear())
 renderGames()
+initGallery()
 initMarquee()
 initNav()
 initBookingForm()

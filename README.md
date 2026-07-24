@@ -19,8 +19,12 @@ procedural, zero image/model assets.
 - **Full gaming-vibe UI** — preloader boot sequence, crosshair custom cursor, glitch title
   bursts, CRT scanlines + noise, angular clip-path buttons, corner-bracket cards, tilting
   3D hover cards, animated stat counters, skewed marquee of game titles.
+- **Drop-in gallery** — put photos/clips in `src/assets/gallery/` and they appear
+  automatically in the "Inside the Arena" section as CCTV-style feeds with a fullscreen
+  tactical lightbox (keyboard nav, video support). Empty state shows styled "NO SIGNAL"
+  camera placeholders. See `src/assets/gallery/README.md`.
 - **Sections** — Hero, The Arena (stats), Games roster (12 titles), Hardware (3D scene +
-  specs), Rates, Social band, Find Us (dark-styled Google Map) + WhatsApp booking form.
+  specs), Gallery, Rates, Social band, Find Us (dark-styled Google Map) + WhatsApp booking form.
 - **Practical stuff** — GSAP ScrollTrigger reveals, IntersectionObserver-paused renderers,
   `prefers-reduced-motion` support, WebGL fallback, self-hosted fonts (no external
   requests), SEO meta + LocalBusiness JSON-LD, fully responsive with mobile nav.
@@ -41,6 +45,7 @@ already set so subpath hosting works).
 
 | What | Where |
 | --- | --- |
+| Gallery photos & clips | drop files into `src/assets/gallery/` (filename → caption) |
 | Phone / WhatsApp / social links | `src/js/config.js` (`SITE`) — **set `whatsapp` to the lounge's WhatsApp mobile number** (booking form sends there) |
 | Games list & card colors | `src/js/config.js` (`GAMES`) |
 | Hourly rates | `index.html` → section `04 / RATES` (current numbers are indicative placeholders — update before going live) |

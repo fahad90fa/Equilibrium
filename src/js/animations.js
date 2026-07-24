@@ -69,6 +69,7 @@ export function initScrollAnimations(reducedMotion) {
     ['.arena__stats .stat', '.arena__stats'],
     ['.games__grid .game', '.games__grid'],
     ['.hardware__list .hw', '.hardware__list'],
+    ['.gallery__grid .gtile', '.gallery__grid'],
     ['.rates__grid .rate', '.rates__grid'],
   ]
   cardGroups.forEach(([items, trigger]) => {
