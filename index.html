@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equilibrium Gaming Zone — Lahore's Ultimate 24/7 Esports Arena</title>
+  <meta name="description" content="Equilibrium Gaming Zone, Johar Town Lahore. 22 battle-ready gaming PCs, 240Hz monitors, PS5 lounge, open 24/7. Valorant, CS2, Dota 2, PUBG, Tekken 8 and more." />
+  <meta name="theme-color" content="#0f1923" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Equilibrium Gaming Zone — Lahore" />
+  <meta property="og:description" content="Lahore's ultimate esports arena. 22 battle-ready rigs, 240Hz monitors, PS5 lounge — open 24/7 in Johar Town." />
+
+  <link rel="preload" href="./fonts/bebas-neue-400.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="./fonts/fonts.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Equilibrium Gaming Zone",
+    "description": "24/7 esports gaming lounge in Lahore — high-end gaming PCs, 240Hz monitors and PS5 consoles.",
+    "telephone": "+92-42-35191222",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Commercial Area 184, Airline Society, near Pak-Turk School, Johar Town",
+      "addressLocality": "Lahore",
+      "addressRegion": "Punjab",
+      "addressCountry": "PK"
+    },
+    "openingHours": "Mo-Su 00:00-24:00",
+    "sameAs": [
+      "https://www.instagram.com/equilibriumgamingpk/",
+      "https://www.facebook.com/EquilibriumPk.official"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ═══════════ PRELOADER ═══════════ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo glitch" data-text="EQUILIBRIUM">EQUILIBRIUM</div>
+      <div class="preloader__bar"><span id="preloader-fill"></span></div>
+      <div class="preloader__status mono" id="preloader-status">INITIALIZING ARENA…</div>
+    </div>
+    <div class="preloader__panel preloader__panel--l"></div>
+    <div class="preloader__panel preloader__panel--r"></div>
+  </div>
+
+  <!-- CRT overlay effects -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- Custom crosshair cursor -->
+  <div class="cursor" id="cursor" aria-hidden="true">
+    <span class="cursor__ring"></span>
+    <span class="cursor__dot"></span>
+  </div>
+
+  <!-- ═══════════ NAV ═══════════ -->
+  <header class="nav" id="nav">
+    <a class="nav__logo" href="#top" aria-label="Equilibrium home">
+      <svg class="nav__logo-mark" viewBox="0 0 40 40" width="34" height="34" aria-hidden="true">
+        <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" fill="none" stroke="var(--red)" stroke-width="2.5"/>
+        <text x="20" y="26" text-anchor="middle" font-size="15" font-family="Bebas Neue, sans-serif" fill="var(--white)">EQ</text>
+      </svg>
+      <span class="nav__logo-text">EQUILIBRIUM<em>//GAMING ZONE</em></span>
+    </a>
+    <nav class="nav__links" id="nav-links" aria-label="Main navigation">
+      <a href="#arena" data-hover>THE ARENA</a>
+      <a href="#games" data-hover>GAMES</a>
+      <a href="#hardware" data-hover>HARDWARE</a>
+      <a href="#rates" data-hover>RATES</a>
+      <a href="#findus" data-hover>FIND US</a>
+      <a href="#book" class="btn btn--red btn--sm" data-hover><span>BOOK A SLOT</span></a>
+    </nav>
+    <button class="nav__burger" id="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main id="top">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero" id="hero">
+      <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero__vignette" aria-hidden="true"></div>
+
+      <div class="hero__hud mono" aria-hidden="true">
+        <span class="hero__hud-item hero__hud-item--tl">// SERVER: LHR-01 <b>●</b> ONLINE</span>
+        <span class="hero__hud-item hero__hud-item--tr">PING 12ms ▮▮▮▮▮</span>
+        <span class="hero__hud-item hero__hud-item--bl">31.4697° N, 74.2728° E — JOHAR TOWN</span>
+        <span class="hero__hud-item hero__hud-item--br">[ 24/7 OPERATIONAL ]</span>
+      </div>
+
+      <div class="hero__content">
+        <p class="hero__kicker mono reveal-up">LAHORE // AIRLINE SOCIETY, JOHAR TOWN — <b>OPEN 24/7</b></p>
+        <h1 class="hero__title">
+          <span class="glitch" data-text="EQUILIBRIUM">EQUILIBRIUM</span>
+          <span class="hero__title-sub">GAMING<i>—</i>ZONE</span>
+        </h1>
+        <p class="hero__tag reveal-up">Lahore's ultimate esports arena. <b>22 battle-ready rigs</b>, 240Hz displays and a PS5
+          lounge — where the city's legends come to grind.</p>
+        <div class="hero__cta reveal-up">
+          <a href="#book" class="btn btn--red" data-hover><span>BOOK A SLOT</span></a>
+          <a href="#arena" class="btn btn--ghost" data-hover><span>EXPLORE THE ARENA</span></a>
+        </div>
+      </div>
+
+      <a href="#arena" class="hero__scroll mono" data-hover aria-label="Scroll down">
+        <span>SCROLL</span>
+        <svg width="14" height="24" viewBox="0 0 14 24" aria-hidden="true"><path d="M7 2v16m0 0l-5-5m5 5l5-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </a>
+    </section>
+
+    <!-- ═══════════ MARQUEE ═══════════ -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee-track">
+        <span>VALORANT ✦ COUNTER-STRIKE 2 ✦ DOTA 2 ✦ PUBG ✦ TEKKEN 8 ✦ EA FC 25 ✦ CALL OF DUTY ✦ GTA V ✦ APEX LEGENDS ✦ LEAGUE OF LEGENDS ✦ FORTNITE ✦ ROCKET LEAGUE ✦&nbsp;</span>
+      </div>
+    </div>
+
+    <!-- ═══════════ 01 / ARENA ═══════════ -->
+    <section class="section arena" id="arena">
+      <div class="section__head">
+        <span class="section__num mono">01</span>
+        <h2 class="section__title">THE <em>ARENA</em></h2>
+        <span class="section__line" aria-hidden="true"></span>
+      </div>
+
+      <div class="arena__grid">
+        <div class="arena__copy">
+          <h3 class="arena__lead">Not a net café. <em>A battleground.</em></h3>
+          <p>Equilibrium is Lahore's premium 24/7 gaming lounge — a fully air-conditioned arena built for
+            serious grinders and squads who take their game seriously. Pull up solo at 3AM or roll in
+            five-deep for a full-squad scrim: the arena never sleeps.</p>
+          <p>Cold drinks and food at your station, comfortable battle chairs, blazing-fast fiber internet
+            and a community of gamers who live for the clutch. This is where Johar Town queues up.</p>
+          <ul class="arena__perks">
+            <li data-hover><i>▸</i> FULL-SQUAD 5v5 SETUPS</li>
+            <li data-hover><i>▸</i> FOOD &amp; DRINKS AT YOUR STATION</li>
+            <li data-hover><i>▸</i> AIR-CONDITIONED, LOUNGE SEATING</li>
+            <li data-hover><i>▸</i> TOURNAMENTS &amp; COMMUNITY NIGHTS</li>
+          </ul>
+        </div>
+
+        <div class="arena__stats">
+          <div class="stat tilt" data-hover>
+            <span class="stat__value"><b class="count" data-count="22">0</b></span>
+            <span class="stat__label mono">BATTLE-READY RIGS</span>
+          </div>
+          <div class="stat tilt" data-hover>
+            <span class="stat__value"><b class="count" data-count="240">0</b>HZ</span>
+            <span class="stat__label mono">ESPORTS DISPLAYS</span>
+          </div>
+          <div class="stat tilt" data-hover>
+            <span class="stat__value"><b class="count" data-count="24">0</b>/7</span>
+            <span class="stat__label mono">ALWAYS ONLINE</span>
+          </div>
+          <div class="stat tilt" data-hover>
+            <span class="stat__value"><b class="count" data-count="100">0</b>+</span>
+            <span class="stat__label mono">TITLES INSTALLED</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ 02 / GAMES ═══════════ -->
+    <section class="section games" id="games">
+      <div class="section__head">
+        <span class="section__num mono">02</span>
+        <h2 class="section__title">PICK YOUR <em>POISON</em></h2>
+        <span class="section__line" aria-hidden="true"></span>
+      </div>
+      <p class="section__sub">Every station loaded with the titles that matter. Competitive-ready configs, your settings saved.</p>
+      <div class="games__grid" id="games-grid"><!-- cards injected by JS --></div>
+    </section>
+
+    <!-- ═══════════ 03 / HARDWARE ═══════════ -->
+    <section class="section hardware" id="hardware">
+      <div class="section__head">
+        <span class="section__num mono">03</span>
+        <h2 class="section__title">THE <em>HARDWARE</em></h2>
+        <span class="section__line" aria-hidden="true"></span>
+      </div>
+
+      <div class="hardware__grid">
+        <div class="hardware__scene tilt-lite">
+          <canvas id="rig-canvas" aria-label="Animated 3D gaming battlestation"></canvas>
+          <div class="hardware__scene-frame" aria-hidden="true"></div>
+          <span class="hardware__scene-tag mono" aria-hidden="true">RIG-07 // LIVE RENDER</span>
+        </div>
+
+        <ul class="hardware__list">
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">⚡</span>
+            <div><h4>RTX-CLASS GPUS</h4><p>High-end graphics on every rig — max settings, still buttery.</p></div>
+          </li>
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">🖥</span>
+            <div><h4>144–240HZ DISPLAYS</h4><p>Esports-grade monitors. See first, shoot first, win first.</p></div>
+          </li>
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">⌨</span>
+            <div><h4>MECHANICAL EVERYTHING</h4><p>RGB mech keyboards, esports mice, pro-grade headsets.</p></div>
+          </li>
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">🎮</span>
+            <div><h4>PS5 + PS4 LOUNGE</h4><p>Latest-gen console corner for Tekken, FC 25 &amp; couch battles.</p></div>
+          </li>
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">📶</span>
+            <div><h4>FIBER-FAST INTERNET</h4><p>Low ping, high bandwidth. Blame your aim, not the net.</p></div>
+          </li>
+          <li class="hw tilt" data-hover>
+            <span class="hw__icon" aria-hidden="true">❄</span>
+            <div><h4>CHILLED ARENA</h4><p>Full AC, lounge seating, food &amp; drinks served to your station.</p></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════ 04 / RATES ═══════════ -->
+    <section class="section rates" id="rates">
+      <div class="section__head">
+        <span class="section__num mono">04</span>
+        <h2 class="section__title">GAME <em>RATES</em></h2>
+        <span class="section__line" aria-hidden="true"></span>
+      </div>
+
+      <div class="rates__grid">
+        <div class="rate tilt" data-hover>
+          <h3 class="rate__name">PC GAMING</h3>
+          <div class="rate__price"><span class="mono">RS.</span>250<span class="rate__per">/HR</span></div>
+          <ul class="rate__list">
+            <li>240Hz esports rig</li>
+            <li>All installed titles</li>
+            <li>Pro headset included</li>
+            <li>5-hour pack — Rs. 1,000</li>
+          </ul>
+          <a href="#book" class="btn btn--ghost btn--full" data-hover><span>GRAB A RIG</span></a>
+        </div>
+
+        <div class="rate rate--hot tilt" data-hover>
+          <span class="rate__badge mono">SQUAD FAVOURITE</span>
+          <h3 class="rate__name">FULL SQUAD 5v5</h3>
+          <div class="rate__price"><span class="mono">RS.</span>1,100<span class="rate__per">/HR</span></div>
+          <ul class="rate__list">
+            <li>5 rigs, side-by-side</li>
+            <li>Scrim-ready setup</li>
+            <li>Priority seating</li>
+            <li>Free cold drinks round</li>
+          </ul>
+          <a href="#book" class="btn btn--red btn--full" data-hover><span>LOCK THE SQUAD</span></a>
+        </div>
+
+        <div class="rate tilt" data-hover>
+          <h3 class="rate__name">CONSOLE LOUNGE</h3>
+          <div class="rate__price"><span class="mono">RS.</span>400<span class="rate__per">/HR</span></div>
+          <ul class="rate__list">
+            <li>PS5 on big screen</li>
+            <li>Two controllers included</li>
+            <li>Tekken 8 / EA FC 25</li>
+            <li>Couch co-op ready</li>
+          </ul>
+          <a href="#book" class="btn btn--ghost btn--full" data-hover><span>TAKE THE COUCH</span></a>
+        </div>
+      </div>
+      <p class="rates__note mono">* Indicative rates — call <a href="tel:+924235191222" data-hover>+92 42 35191222</a> for current rates &amp; night packages.</p>
+    </section>
+
+    <!-- ═══════════ SOCIAL BAND ═══════════ -->
+    <section class="social-band">
+      <div class="social-band__inner">
+        <h3 class="social-band__title">FOLLOW THE <em>GRIND</em></h3>
+        <p>Daily arena clips, tournament announcements and highlight reels.</p>
+        <div class="social-band__links">
+          <a class="btn btn--ghost" href="https://www.instagram.com/equilibriumgamingpk/" target="_blank" rel="noopener" data-hover><span>◈ INSTAGRAM — @equilibriumgamingpk</span></a>
+          <a class="btn btn--ghost" href="https://www.facebook.com/EquilibriumPk.official" target="_blank" rel="noopener" data-hover><span>◈ FACEBOOK — EquilibriumPk.official</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ 05 / FIND US + BOOK ═══════════ -->
+    <section class="section findus" id="findus">
+      <div class="section__head">
+        <span class="section__num mono">05</span>
+        <h2 class="section__title">FIND <em>US</em></h2>
+        <span class="section__line" aria-hidden="true"></span>
+      </div>
+
+      <div class="findus__grid">
+        <div class="findus__map tilt-lite">
+          <iframe
+            title="Equilibrium Gaming Zone on Google Maps"
+            src="https://maps.google.com/maps?q=Equilibrium%20Gaming%20Lounge%20Airline%20Society%20Lahore&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          <div class="findus__map-frame" aria-hidden="true"></div>
+        </div>
+
+        <div class="findus__info" id="book">
+          <div class="findus__block">
+            <h4 class="mono">// COORDINATES</h4>
+            <p>Commercial Area 184, Airline Society,<br/>near Pak-Turk School &amp; UCP,<br/>Johar Town, Lahore</p>
+            <a class="btn btn--ghost btn--sm" href="https://goo.gl/maps/N7HUdXtKXWP75iNL8" target="_blank" rel="noopener" data-hover><span>GET DIRECTIONS ➤</span></a>
+          </div>
+          <div class="findus__block">
+            <h4 class="mono">// COMMS</h4>
+            <p><a class="findus__phone" href="tel:+924235191222" data-hover>+92 42 3519 1222</a><br/><span class="mono findus__always">STATUS: <b>OPEN 24/7 — EVEN RIGHT NOW</b></span></p>
+          </div>
+
+          <form class="book" id="book-form">
+            <h3 class="book__title">BOOK YOUR <em>SLOT</em></h3>
+            <div class="book__row">
+              <label class="field"><span class="mono">CALLSIGN / NAME</span>
+                <input type="text" name="name" placeholder="e.g. FahadOP" required data-hover />
+              </label>
+              <label class="field"><span class="mono">PHONE</span>
+                <input type="tel" name="phone" placeholder="03XX-XXXXXXX" required data-hover />
+              </label>
+            </div>
+            <div class="book__row">
+              <label class="field"><span class="mono">PLATFORM</span>
+                <select name="platform" data-hover>
+                  <option>PC — Solo</option>
+                  <option>PC — Full Squad (5v5)</option>
+                  <option>PS5 Lounge</option>
+                </select>
+              </label>
+              <label class="field"><span class="mono">WHEN</span>
+                <input type="text" name="when" placeholder="e.g. Tonight, 9 PM" data-hover />
+              </label>
+            </div>
+            <button type="submit" class="btn btn--red btn--full" data-hover><span>SEND BOOKING VIA WHATSAPP</span></button>
+            <p class="book__hint mono">Opens WhatsApp with your booking pre-typed — or just call us.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer class="footer">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <span class="footer__logo">EQUILIBRIUM<em>//GAMING ZONE</em></span>
+        <p class="mono">LAHORE'S ULTIMATE 24/7 ESPORTS ARENA</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="#arena" data-hover>THE ARENA</a>
+        <a href="#games" data-hover>GAMES</a>
+        <a href="#hardware" data-hover>HARDWARE</a>
+        <a href="#rates" data-hover>RATES</a>
+        <a href="#book" data-hover>BOOK A SLOT</a>
+      </nav>
+      <div class="footer__social">
+        <a href="https://www.instagram.com/equilibriumgamingpk/" target="_blank" rel="noopener" data-hover>INSTAGRAM ↗</a>
+        <a href="https://www.facebook.com/EquilibriumPk.official" target="_blank" rel="noopener" data-hover>FACEBOOK ↗</a>
+        <a href="tel:+924235191222" data-hover>+92 42 3519 1222</a>
+      </div>
+    </div>
+    <div class="footer__bar mono">
+      <span>© <span id="year">2026</span> EQUILIBRIUM GAMING ZONE — ALL RIGHTS RESERVED</span>
+      <span class="footer__gg">GG WP ✦ SEE YOU IN THE ARENA</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
