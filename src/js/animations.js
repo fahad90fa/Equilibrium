@@ -56,11 +56,15 @@ export function initScrollAnimations(reducedMotion) {
     return
   }
 
+  // NOTE: every from() clears its inline styles on completion — hover
+  // effects use the CSS `translate` property and must not be blocked by
+  // leftover inline transforms.
   // generic section headers
   document.querySelectorAll('.section__head').forEach((head) => {
     gsap.from(head.children, {
       scrollTrigger: { trigger: head, start: 'top 85%' },
       y: 40, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.08,
+      clearProps: 'all',
     })
   })
 
@@ -76,31 +80,36 @@ export function initScrollAnimations(reducedMotion) {
     gsap.from(items, {
       scrollTrigger: { trigger, start: 'top 82%' },
       y: 46, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.07,
+      clearProps: 'all',
     })
   })
 
   gsap.from('.arena__copy > *', {
     scrollTrigger: { trigger: '.arena__copy', start: 'top 80%' },
     x: -40, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.09,
+    clearProps: 'all',
   })
 
   gsap.from('.hardware__scene', {
     scrollTrigger: { trigger: '.hardware__scene', start: 'top 80%' },
     clipPath: 'inset(0 100% 0 0)', duration: 1, ease: 'power4.inOut',
+    clearProps: 'clipPath',
   })
 
   gsap.from('.findus__map', {
     scrollTrigger: { trigger: '.findus__grid', start: 'top 80%' },
-    x: -60, opacity: 0, duration: 0.8, ease: 'power3.out',
+    x: -60, opacity: 0, duration: 0.8, ease: 'power3.out', clearProps: 'all',
   })
   gsap.from('.findus__info > *', {
     scrollTrigger: { trigger: '.findus__grid', start: 'top 78%' },
     x: 60, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.1,
+    clearProps: 'all',
   })
 
   gsap.from('.social-band__inner > *', {
     scrollTrigger: { trigger: '.social-band', start: 'top 85%' },
     y: 30, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.1,
+    clearProps: 'all',
   })
 }
 

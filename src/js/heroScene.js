@@ -55,8 +55,8 @@ export function initHeroScene(canvas, { reducedMotion = false } = {}) {
   }
 
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x05070b)
-  scene.fog = new THREE.FogExp2(0x05070b, 0.052)
+  scene.background = new THREE.Color(0x0f1923)
+  scene.fog = new THREE.FogExp2(0x0f1923, 0.052)
 
   // image-based lighting for believable reflections on the PBR materials
   const pmrem = new THREE.PMREMGenerator(renderer)
@@ -71,7 +71,7 @@ export function initHeroScene(canvas, { reducedMotion = false } = {}) {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(70, 40),
     new THREE.MeshStandardMaterial({
-      color: 0x090c12, metalness: 0.82, roughness: 0.24, envMapIntensity: 1.1,
+      color: 0x0b131c, metalness: 0.82, roughness: 0.24, envMapIntensity: 1.1,
     })
   )
   floor.rotation.x = -Math.PI / 2

@@ -3,10 +3,11 @@
 A fully animated, 3D, gaming-vibe website for **Equilibrium Gaming Zone** — Lahore's 24/7
 esports arena (Commercial Area 184, Airline Society, Johar Town).
 
-Cinematic tactical theme inspired by Valorant / CS2: Valorant-red on near-black gunmetal,
-angular HUD-style UI, glitch effects, and two real-time photoreal-leaning WebGL scenes
-(PBR materials, image-based lighting, ACES filmic tone mapping, soft shadows) — all
-procedural, zero image/model assets.
+Design language v3 "PROTOCOL" — built on the actual Valorant visual identity: bone-white
+editorial bands slamming against dark navy, signal-red slashes, huge condensed typography,
+diagonal section cuts, ghost outline text, notched corners. Plus two real-time
+photoreal-leaning WebGL scenes (PBR materials, image-based lighting, ACES filmic tone
+mapping, soft shadows) — all procedural, zero image/model assets.
 
 ## ✨ What's inside
 

@@ -170,7 +170,7 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
   }
 
   const scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0x05070b, 0.03)
+  scene.fog = new THREE.FogExp2(0x0f1923, 0.03)
 
   const pmrem = new THREE.PMREMGenerator(renderer)
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.06).texture
@@ -309,7 +309,7 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
   // ── Floor — same glossy studio floor as the hero ──
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(34, 34),
-    new THREE.MeshStandardMaterial({ color: 0x090c12, metalness: 0.8, roughness: 0.28, envMapIntensity: 0.9 })
+    new THREE.MeshStandardMaterial({ color: 0x0c141d, metalness: 0.8, roughness: 0.28, envMapIntensity: 0.9 })
   )
   floor.rotation.x = -Math.PI / 2
   floor.position.y = -1.55
@@ -348,6 +348,12 @@ export function initRigScene(canvas, { reducedMotion = false } = {}) {
   }
   resize()
   window.addEventListener('resize', resize)
+
+  // Pre-compile shaders and render one warm-up frame now (while the user
+  // is still up at the hero) so the first scroll-past never stalls.
+  feed.draw(0)
+  renderer.compile(scene, camera)
+  renderer.render(scene, camera)
 
   const mouse = { x: 0, tx: 0 }
   window.addEventListener('pointermove', (e) => {

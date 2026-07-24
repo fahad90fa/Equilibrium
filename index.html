@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Equilibrium Gaming Zone — Lahore's Ultimate 24/7 Esports Arena</title>
   <meta name="description" content="Equilibrium Gaming Zone, Johar Town Lahore. 22 battle-ready gaming PCs, 240Hz monitors, PS5 lounge, open 24/7. Valorant, CS2, Dota 2, PUBG, Tekken 8 and more." />
-  <meta name="theme-color" content="#05070b" />
+  <meta name="theme-color" content="#0f1923" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
 
   <meta property="og:type" content="website" />
@@ -88,7 +88,10 @@
     <!-- ═══════════ HERO ═══════════ -->
     <section class="hero" id="hero">
       <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero__ghost" aria-hidden="true"><span>EQUILIBRIUM</span><span>EQUILIBRIUM</span></div>
       <div class="hero__vignette" aria-hidden="true"></div>
+      <span class="hero__slash hero__slash--r" aria-hidden="true"></span>
+      <span class="hero__slash hero__slash--l" aria-hidden="true"></span>
 
       <div class="hero__hud mono" aria-hidden="true">
         <span class="hero__hud-item hero__hud-item--tl">// SERVER: LHR-01 <b>●</b> ONLINE</span>
@@ -107,7 +110,7 @@
           lounge — where the city's legends come to grind.</p>
         <div class="hero__cta reveal-up">
           <a href="#book" class="btn btn--red" data-hover><span>BOOK A SLOT</span></a>
-          <a href="#arena" class="btn btn--ghost" data-hover><span>EXPLORE THE ARENA</span></a>
+          <a href="#arena" class="btn btn--bone" data-hover><span>EXPLORE THE ARENA</span></a>
         </div>
       </div>
 
@@ -124,8 +127,10 @@
       </div>
     </div>
 
-    <!-- ═══════════ 01 / ARENA ═══════════ -->
+    <!-- ═══════════ 01 / ARENA (light band) ═══════════ -->
+    <div class="band band--light">
     <section class="section arena" id="arena">
+      <span class="section__ghost" aria-hidden="true">ARENA</span>
       <div class="section__head">
         <span class="section__num mono">01</span>
         <h2 class="section__title">THE <em>ARENA</em></h2>
@@ -149,28 +154,30 @@
         </div>
 
         <div class="arena__stats">
-          <div class="stat tilt" data-hover>
+          <div class="stat" data-hover>
             <span class="stat__value"><b class="count" data-count="22">0</b></span>
             <span class="stat__label mono">BATTLE-READY RIGS</span>
           </div>
-          <div class="stat tilt" data-hover>
+          <div class="stat" data-hover>
             <span class="stat__value"><b class="count" data-count="240">0</b>HZ</span>
             <span class="stat__label mono">ESPORTS DISPLAYS</span>
           </div>
-          <div class="stat tilt" data-hover>
+          <div class="stat" data-hover>
             <span class="stat__value"><b class="count" data-count="24">0</b>/7</span>
             <span class="stat__label mono">ALWAYS ONLINE</span>
           </div>
-          <div class="stat tilt" data-hover>
+          <div class="stat" data-hover>
             <span class="stat__value"><b class="count" data-count="100">0</b>+</span>
             <span class="stat__label mono">TITLES INSTALLED</span>
           </div>
         </div>
       </div>
     </section>
+    </div>
 
     <!-- ═══════════ 02 / GAMES ═══════════ -->
     <section class="section games" id="games">
+      <span class="section__ghost" aria-hidden="true">LOADOUT</span>
       <div class="section__head">
         <span class="section__num mono">02</span>
         <h2 class="section__title">PICK YOUR <em>POISON</em></h2>
@@ -180,8 +187,10 @@
       <div class="games__grid" id="games-grid"><!-- cards injected by JS --></div>
     </section>
 
-    <!-- ═══════════ 03 / HARDWARE ═══════════ -->
+    <!-- ═══════════ 03 / HARDWARE (light band) ═══════════ -->
+    <div class="band band--light">
     <section class="section hardware" id="hardware">
+      <span class="section__ghost" aria-hidden="true">GEAR</span>
       <div class="section__head">
         <span class="section__num mono">03</span>
         <h2 class="section__title">THE <em>HARDWARE</em></h2>
@@ -189,12 +198,6 @@
       </div>
 
       <div class="hardware__grid">
-        <div class="hardware__scene tilt-lite">
-          <canvas id="rig-canvas" aria-label="Animated 3D gaming battlestation"></canvas>
-          <div class="hardware__scene-frame" aria-hidden="true"></div>
-          <span class="hardware__scene-tag mono" aria-hidden="true">RIG-07 // LIVE RENDER</span>
-        </div>
-
         <ul class="hardware__list">
           <li class="hw tilt" data-hover>
             <span class="hw__icon" aria-hidden="true">
@@ -233,11 +236,19 @@
             <div><h4>CHILLED ARENA</h4><p>Full AC, lounge seating, food &amp; drinks served to your station.</p></div>
           </li>
         </ul>
+
+        <div class="hardware__scene">
+          <canvas id="rig-canvas" aria-label="Animated 3D gaming battlestation"></canvas>
+          <div class="hardware__scene-frame" aria-hidden="true"></div>
+          <span class="hardware__scene-tag mono" aria-hidden="true">RIG-07 // LIVE RENDER</span>
+        </div>
       </div>
     </section>
+    </div>
 
     <!-- ═══════════ 04 / GALLERY ═══════════ -->
     <section class="section gallery" id="gallery">
+      <span class="section__ghost" aria-hidden="true">FEED</span>
       <div class="section__head">
         <span class="section__num mono">04</span>
         <h2 class="section__title">INSIDE THE <em>ARENA</em></h2>
@@ -248,8 +259,10 @@
       <p class="gallery__hint mono" id="gallery-hint" hidden>// FEEDS OFFLINE — drop photos &amp; clips into <b>src/assets/gallery/</b> and rebuild; they go live here automatically.</p>
     </section>
 
-    <!-- ═══════════ 05 / RATES ═══════════ -->
+    <!-- ═══════════ 05 / RATES (light band) ═══════════ -->
+    <div class="band band--light">
     <section class="section rates" id="rates">
+      <span class="section__ghost" aria-hidden="true">RATES</span>
       <div class="section__head">
         <span class="section__num mono">05</span>
         <h2 class="section__title">GAME <em>RATES</em></h2>
@@ -257,7 +270,7 @@
       </div>
 
       <div class="rates__grid">
-        <div class="rate tilt" data-hover>
+        <div class="rate" data-hover>
           <h3 class="rate__name">PC GAMING</h3>
           <div class="rate__price"><span class="mono">RS.</span>250<span class="rate__per">/HR</span></div>
           <ul class="rate__list">
@@ -266,10 +279,10 @@
             <li>Pro headset included</li>
             <li>5-hour pack — Rs. 1,000</li>
           </ul>
-          <a href="#book" class="btn btn--ghost btn--full" data-hover><span>GRAB A RIG</span></a>
+          <a href="#book" class="btn btn--ink btn--full" data-hover><span>GRAB A RIG</span></a>
         </div>
 
-        <div class="rate rate--hot tilt" data-hover>
+        <div class="rate rate--hot" data-hover>
           <span class="rate__badge mono">SQUAD FAVOURITE</span>
           <h3 class="rate__name">FULL SQUAD 5v5</h3>
           <div class="rate__price"><span class="mono">RS.</span>1,100<span class="rate__per">/HR</span></div>
@@ -282,7 +295,7 @@
           <a href="#book" class="btn btn--red btn--full" data-hover><span>LOCK THE SQUAD</span></a>
         </div>
 
-        <div class="rate tilt" data-hover>
+        <div class="rate" data-hover>
           <h3 class="rate__name">CONSOLE LOUNGE</h3>
           <div class="rate__price"><span class="mono">RS.</span>400<span class="rate__per">/HR</span></div>
           <ul class="rate__list">
@@ -291,26 +304,29 @@
             <li>Tekken 8 / EA FC 25</li>
             <li>Couch co-op ready</li>
           </ul>
-          <a href="#book" class="btn btn--ghost btn--full" data-hover><span>TAKE THE COUCH</span></a>
+          <a href="#book" class="btn btn--ink btn--full" data-hover><span>TAKE THE COUCH</span></a>
         </div>
       </div>
       <p class="rates__note mono">* Indicative rates — call <a href="tel:+924235191222" data-hover>+92 42 35191222</a> for current rates &amp; night packages.</p>
     </section>
+    </div>
 
-    <!-- ═══════════ SOCIAL BAND ═══════════ -->
-    <section class="social-band">
+    <!-- ═══════════ SOCIAL BAND (red) ═══════════ -->
+    <section class="social-band band--red">
+      <span class="social-band__ghost" aria-hidden="true">GG WP</span>
       <div class="social-band__inner">
         <h3 class="social-band__title">FOLLOW THE <em>GRIND</em></h3>
         <p>Daily arena clips, tournament announcements and highlight reels.</p>
         <div class="social-band__links">
-          <a class="btn btn--ghost" href="https://www.instagram.com/equilibriumgamingpk/" target="_blank" rel="noopener" data-hover><span>◈ INSTAGRAM — @equilibriumgamingpk</span></a>
-          <a class="btn btn--ghost" href="https://www.facebook.com/EquilibriumPk.official" target="_blank" rel="noopener" data-hover><span>◈ FACEBOOK — EquilibriumPk.official</span></a>
+          <a class="btn btn--bone" href="https://www.instagram.com/equilibriumgamingpk/" target="_blank" rel="noopener" data-hover><span>◈ INSTAGRAM — @equilibriumgamingpk</span></a>
+          <a class="btn btn--bone" href="https://www.facebook.com/EquilibriumPk.official" target="_blank" rel="noopener" data-hover><span>◈ FACEBOOK — EquilibriumPk.official</span></a>
         </div>
       </div>
     </section>
 
     <!-- ═══════════ 06 / FIND US + BOOK ═══════════ -->
     <section class="section findus" id="findus">
+      <span class="section__ghost" aria-hidden="true">GPS</span>
       <div class="section__head">
         <span class="section__num mono">06</span>
         <h2 class="section__title">FIND <em>US</em></h2>
@@ -318,7 +334,7 @@
       </div>
 
       <div class="findus__grid">
-        <div class="findus__map tilt-lite">
+        <div class="findus__map">
           <iframe
             title="Equilibrium Gaming Zone on Google Maps"
             src="https://maps.google.com/maps?q=Equilibrium%20Gaming%20Lounge%20Airline%20Society%20Lahore&t=&z=15&ie=UTF8&iwloc=&output=embed"
@@ -330,7 +346,7 @@
           <div class="findus__block">
             <h4 class="mono">// COORDINATES</h4>
             <p>Commercial Area 184, Airline Society,<br/>near Pak-Turk School &amp; UCP,<br/>Johar Town, Lahore</p>
-            <a class="btn btn--ghost btn--sm" href="https://goo.gl/maps/N7HUdXtKXWP75iNL8" target="_blank" rel="noopener" data-hover><span>GET DIRECTIONS ➤</span></a>
+            <a class="btn btn--bone btn--sm" href="https://goo.gl/maps/N7HUdXtKXWP75iNL8" target="_blank" rel="noopener" data-hover><span>GET DIRECTIONS ➤</span></a>
           </div>
           <div class="findus__block">
             <h4 class="mono">// COMMS</h4>
